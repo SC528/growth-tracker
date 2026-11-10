@@ -91,6 +91,59 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.app{display:gri
   .stat-value{font-size:19px}
   .today{max-width:95px}
 }
+
+/* Extra-small-screen layout: keep every content panel within the viewport. */
+html,body{max-width:100%;overflow-x:hidden}
+.app,.main,.view,.panel,.card,.hero,.two-col,.grid,.form-grid,.field{min-width:0;max-width:100%}
+img,svg,canvas,video{max-width:100%}
+@media(max-width:560px){
+  .app{display:block;width:100%;}
+  .sidebar,.main{width:100%;min-width:0}
+  .main{padding-left:12px;padding-right:12px;}
+  .topbar,.section-head,.calendar-head,.form-actions{min-width:0;flex-wrap:wrap;}
+  .topbar>* , .section-head>*{min-width:0;max-width:100%;}
+  .today{overflow-wrap:anywhere;}
+  .hero>div:first-child{min-width:0;width:100%;}
+  .hero-index{width:100%;}
+  .quick-actions{min-width:0;max-width:100%;}
+  .quick-actions .btn,.form-actions>.btn,.form-actions>div{min-width:0;max-width:100%;}
+  .btn{white-space:normal;overflow-wrap:anywhere;}
+  .field input,.field textarea,.field select{min-width:0;max-width:100%;}
+  .cal-grid{width:100%;grid-template-columns:repeat(7,minmax(0,1fr));}
+  .cal-cell{min-width:0;overflow:hidden;}
+  .calendar-head .quick-actions{flex-wrap:nowrap;}
+  .review-tabs{max-width:100%;}
+  .review-tabs button{flex:1 1 auto;min-width:0;padding-left:8px;padding-right:8px;}
+  /* Convert the wide metrics table into compact stacked rows instead of horizontal scrolling. */
+  #metrics .panel{overflow:visible;}
+  .metric-table{width:100%;min-width:0;display:block;border-collapse:separate;}
+  .metric-table thead{display:none;}
+  .metric-table tbody{display:grid;gap:10px;width:100%;}
+  .metric-table tr{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:#fffefa;}
+  .metric-table td{display:flex;flex-direction:column;gap:5px;min-width:0;padding:0;border:0;font-size:11px;}
+  .metric-table td:first-child{grid-column:1/-1;}
+  .metric-table td:nth-child(1)::before{content:'영역 / 지표';}
+  .metric-table td:nth-child(2)::before{content:'시작값';}
+  .metric-table td:nth-child(3)::before{content:'현재값';}
+  .metric-table td:nth-child(4)::before{content:'단위 / 메모';}
+  .metric-table td:nth-child(5){grid-column:1/-1;align-items:flex-end;}
+  .metric-table td::before{font-size:10px;color:var(--muted);}
+  .metric-table input{width:100%;max-width:none;min-width:0;padding:9px 8px;font-size:14px;}
+  .metric-table td:nth-child(5) .btn{width:100%;}
+  .metric-table td[colspan]{grid-column:1/-1;}
+  #trialProjectList .btn{white-space:normal;overflow-wrap:anywhere;}
+  #trialDetail{overflow-wrap:anywhere;word-break:break-word;}
+  #transferResult{overflow-wrap:anywhere;word-break:break-word;}
+}
+@media(max-width:360px){
+  .main{padding-left:9px;padding-right:9px;}
+  .panel{padding:13px 10px;}
+  .hero{padding:15px 13px;}
+  .cal-cell{min-height:48px;padding:3px 1px;}
+  .date-num{width:20px;height:20px;}
+  .metric-table tr{padding:8px;gap:7px;}
+}
+
 </style>
 </head>
 <body>

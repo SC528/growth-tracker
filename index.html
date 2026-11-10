@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1% Growth Tracker</title>
+<style>
+:root{--bg:#f7f6f1;--paper:#fffefa;--ink:#292923;--muted:#858477;--line:#e9e6dc;--accent:#68765c;--accent-soft:#edf0e8;--sand:#eee9dc;--gold:#b18b51;--shadow:0 8px 28px rgba(47,43,32,.045)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;font-size:14px}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:238px 1fr;min-height:100vh}
+.sidebar{background:#f1efe7;border-right:1px solid var(--line);padding:26px 17px;display:flex;flex-direction:column;gap:28px}
+.brand{padding:4px 10px}.brand-mark{width:34px;height:34px;border-radius:11px;background:var(--accent);color:white;display:grid;place-items:center;font-weight:700;margin-bottom:13px}.brand h1{font-size:16px;margin:0 0 4px;letter-spacing:-.4px}.brand p{margin:0;color:var(--muted);font-size:11px;letter-spacing:1.5px}
+.nav-label{font-size:10px;letter-spacing:1.5px;color:#9a978a;padding:0 11px;margin-bottom:7px}.nav{display:grid;gap:4px}.nav button{border:0;background:transparent;color:#656458;text-align:left;padding:11px 12px;border-radius:9px;display:flex;gap:11px;align-items:center}.nav button:hover,.nav button.active{background:#fffefa;color:var(--accent);font-weight:650}.nav .ico{width:17px;text-align:center;font-size:15px}
+.sidebar-foot{margin-top:auto;padding:14px 12px;border-top:1px solid #e2dfd4;color:var(--muted);font-size:11px;line-height:1.65}
+.main{padding:30px clamp(20px,4vw,58px) 60px;max-width:1500px;width:100%;margin:0 auto}.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}.eyebrow{font-size:10px;letter-spacing:2px;color:var(--accent);font-weight:700}.topbar h2{font-size:25px;letter-spacing:-1px;margin:6px 0 0}.today{color:var(--muted);font-size:12px}
+.view{display:none}.view.active{display:block}.hero{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:25px 27px;display:flex;justify-content:space-between;gap:20px;align-items:center;box-shadow:var(--shadow);margin-bottom:18px}.hero h3{font-size:20px;margin:7px 0 6px;letter-spacing:-.6px}.hero p{margin:0;color:var(--muted);line-height:1.65}.hero-index{text-align:right;min-width:155px}.hero-index strong{display:block;font-size:35px;color:var(--accent);letter-spacing:-1.5px}.hero-index span{font-size:11px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px}.card{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:17px 18px;box-shadow:var(--shadow)}.stat-label{color:var(--muted);font-size:11px}.stat-value{font-size:25px;font-weight:700;letter-spacing:-1px;margin:9px 0 4px}.stat-note{font-size:11px;color:var(--muted)}.green{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:1.2fr .8fr;gap:15px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.section-head h3{font-size:15px;margin:0}.section-head small{color:var(--muted)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:19px;box-shadow:var(--shadow);margin-bottom:15px}.bar-wrap{height:9px;background:#eeece4;border-radius:20px;overflow:hidden;margin:13px 0 8px}.bar{height:100%;background:var(--accent);border-radius:20px;width:0;transition:width .3s}.week-days{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}.day-mini{background:#f7f6f1;border-radius:9px;padding:10px 4px;text-align:center;color:var(--muted);font-size:10px}.day-mini b{display:block;color:var(--ink);font-size:15px;margin-top:7px}.day-mini.done{background:var(--accent-soft);color:var(--accent)}.day-mini.done b{color:var(--accent)}
+.quick-actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fffefa;color:var(--ink);border-radius:8px;padding:9px 13px;font-size:12px}.btn.primary{background:var(--accent);color:white;border-color:var(--accent)}.btn:hover{filter:brightness(.97)}.btn.danger{color:#9b5d50}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:650}.field .hint{font-size:11px;color:var(--muted);font-weight:400}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:8px;background:#fffefa;padding:11px 12px;color:var(--ink);outline:none}.field textarea{min-height:88px;resize:vertical;line-height:1.6}.field input:focus,.field textarea:focus,.field select:focus{border-color:#a6b09a;box-shadow:0 0 0 3px #edf0e8}.form-actions{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:10px}.muted{color:var(--muted)}.small{font-size:11px}
+.calendar-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.month-title{font-size:20px;font-weight:700}.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line)}.cal-cell{min-height:100px;padding:9px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:#fffefa;position:relative;cursor:pointer}.cal-cell:hover{background:#faf9f4}.cal-cell.muted-day{background:#f8f7f2;color:#c0bdb2}.cal-cell.selected{outline:2px solid var(--accent);outline-offset:-2px;background:#f3f5ef}.cal-cell.today .date-num{background:var(--accent);color:white}.date-num{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;font-size:11px}.cal-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;margin:5px 3px 0 0}.cal-snippet{font-size:10px;color:var(--muted);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.review-tabs{display:flex;gap:7px;margin-bottom:15px;flex-wrap:wrap}.review-tabs button{border:1px solid var(--line);background:#fffefa;border-radius:20px;padding:8px 14px;color:var(--muted);font-size:12px}.review-tabs button.active{background:var(--accent-soft);color:var(--accent);border-color:#dce2d5;font-weight:700}
+.rule-list{display:grid;gap:10px}.rule{display:flex;gap:13px;padding:13px;background:#f8f7f2;border-radius:10px}.rule-num{width:25px;height:25px;border-radius:50%;background:var(--sand);display:grid;place-items:center;color:#806c4b;font-weight:700;flex-shrink:0}.rule strong{display:block;font-size:12px;margin-bottom:4px}.rule p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}
+.metric-table{width:100%;border-collapse:collapse}.metric-table th,.metric-table td{padding:11px 8px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}.metric-table th{color:var(--muted);font-weight:500}.metric-table input{width:100%;max-width:120px;border:1px solid var(--line);border-radius:6px;padding:7px;background:white}
+.empty{padding:25px;text-align:center;color:var(--muted);font-size:12px}.toast{position:fixed;bottom:22px;right:22px;background:#34372f;color:white;padding:11px 16px;border-radius:9px;font-size:12px;opacity:0;transform:translateY(8px);transition:.25s;pointer-events:none}.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{padding:13px 15px;gap:12px}.brand{display:flex;align-items:center;gap:10px;padding:0}.brand-mark{margin:0}.brand h1{font-size:14px}.brand p{display:none}.nav-label,.sidebar-foot{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:9px}.main{padding:22px 15px 40px}.grid{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}}
+@media(max-width:560px){.hero{align-items:flex-start;flex-direction:column}.hero-index{text-align:left}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.cal-cell{min-height:68px;padding:5px}.cal-snippet{display:none}.topbar h2{font-size:21px}}
+/* Mobile refinement: desktop layout above remains unchanged */
+@media(max-width:900px){
+  .sidebar{position:sticky;top:0;z-index:20;padding:10px 12px;background:rgba(241,239,231,.97);backdrop-filter:blur(12px);border-right:0;border-bottom:1px solid var(--line);gap:9px}
+  .brand{min-height:34px}
+  .nav{gap:5px;padding-bottom:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .nav::-webkit-scrollbar{display:none}
+  .nav button{flex:0 0 auto;min-height:40px;font-size:12px}
+  .main{padding-top:19px}
+}
+@media(max-width:560px){
+  body{font-size:14px}
+  .sidebar{padding:9px 10px}
+  .brand-mark{width:30px;height:30px;border-radius:9px;font-size:12px}
+  .brand h1{font-size:13px}
+  .nav button{padding:8px 10px;gap:7px;border-radius:8px}
+  .nav .ico{width:14px;font-size:13px}
+  .main{padding:17px 12px 32px}
+  .topbar{align-items:flex-start;gap:8px;margin-bottom:17px}
+  .eyebrow{font-size:9px;letter-spacing:1.4px}
+  .topbar h2{font-size:20px;margin-top:5px}
+  .today{font-size:10px;text-align:right;max-width:112px;line-height:1.5}
+  .hero{padding:18px 17px;gap:13px;border-radius:13px}
+  .hero h3{font-size:17px;line-height:1.4}
+  .hero p{font-size:12px}
+  .hero-index{min-width:0}
+  .hero-index strong{font-size:30px}
+  .grid{gap:9px;margin-bottom:13px}
+  .card{padding:13px 12px;border-radius:11px;min-width:0}
+  .stat-label,.stat-note{font-size:10px;line-height:1.45}
+  .stat-value{font-size:21px;margin:7px 0 3px}
+  .two-col{gap:10px}
+  .panel{padding:15px 13px;margin-bottom:11px;border-radius:11px}
+  .section-head{gap:8px;align-items:flex-start}
+  .section-head h3{font-size:14px}
+  .week-days{gap:4px}
+  .day-mini{padding:8px 2px;font-size:9px}
+  .day-mini b{font-size:13px;margin-top:5px}
+  .quick-actions{gap:7px}
+  .btn{padding:10px 11px;font-size:12px;min-height:38px}
+  .form-grid{gap:12px}
+  .field{gap:6px}
+  .field label{font-size:12px;line-height:1.5}
+  .field input,.field textarea,.field select{font-size:16px;padding:11px 10px}
+  .field textarea{min-height:100px}
+  .form-actions{align-items:stretch;flex-direction:column}
+  .form-actions .quick-actions{width:100%}
+  .form-actions .btn{flex:1}
+  .calendar-head{gap:8px}
+  .month-title{font-size:17px}
+  .cal-cell{min-height:54px;padding:4px 2px}
+  .date-num{width:22px;height:22px;font-size:10px}
+  .cal-dot{width:5px;height:5px;margin:4px 1px 0}
+  .review-tabs{gap:5px}
+  .review-tabs button{padding:8px 11px;font-size:11px}
+  .metric-table{min-width:540px}
+  #metrics .panel{overflow-x:auto}
+  .rule{gap:10px;padding:11px}
+  .toast{left:12px;right:12px;bottom:12px;text-align:center}
+}
+@media(max-width:360px){
+  .main{padding-left:9px;padding-right:9px}
+  .grid{gap:7px}
+  .card{padding:11px 9px}
+  .stat-value{font-size:19px}
+  .today{max-width:95px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+ <div class="brand"><div class="brand-mark">1%</div><div><h1>Growth Tracker</h1><p>SMALL STEPS, BIG CHANGE</p></div></div>
+ <div><div class="nav-label">WORKSPACE</div><nav class="nav">
+  <button class="active" data-view="dashboard"><span class="ico">⌂</span>대시보드</button>
+  <button data-view="daily"><span class="ico">✎</span>일간 기록</button>
+  <button data-view="calendar"><span class="ico">▦</span>성장 달력</button>
+  <button data-view="reviews"><span class="ico">▤</span>기간별 리뷰</button>
+  <button data-view="metrics"><span class="ico">↗</span>성장 지표</button>
+  <button data-view="rules"><span class="ico">◇</span>성장 규칙</button>
+ </nav></div>
+ <div class="sidebar-foot">매일 1%를 목표로,<br>기록으로 변화를 확인하세요.<br><br>데이터는 이 브라우저에 저장됩니다.</div>
+</aside>
+<main class="main">
+ <header class="topbar"><div><div class="eyebrow">YOUR PERSONAL GROWTH SPACE</div><h2 id="pageTitle">대시보드</h2></div><div class="today" id="todayLabel"></div></header>
+
+ <section class="view active" id="dashboard">
+  <div class="hero"><div><div class="eyebrow">DAILY PROGRESS</div><h3>작은 개선이 쌓여 큰 변화가 됩니다.</h3><p>완벽한 하루보다, 어제보다 조금 나은 오늘을 기록하세요.</p></div><div class="hero-index"><strong id="heroIndex">100.00</strong><span>목표 성장 지수 · 시작값 100</span></div></div>
+  <div class="grid">
+   <div class="card"><div class="stat-label">누적 기록일</div><div class="stat-value" id="statDays">0일</div><div class="stat-note">기록을 남긴 날짜</div></div>
+   <div class="card"><div class="stat-label">연속 기록</div><div class="stat-value" id="statStreak">0일</div><div class="stat-note">오늘 기준 연속 기록</div></div>
+   <div class="card"><div class="stat-label">목표 누적 성장률</div><div class="stat-value green" id="statGrowth">+0.00%</div><div class="stat-note">시작일부터 매일 1% 가정</div></div>
+   <div class="card"><div class="stat-label">이번 달 기록</div><div class="stat-value" id="statMonth">0일</div><div class="stat-note">이번 달 기록한 날짜</div></div>
+  </div>
+  <div class="two-col">
+   <div class="panel"><div class="section-head"><h3>이번 주 기록 현황</h3><small id="weekLabel"></small></div><div class="week-days" id="weekDays"></div><div class="bar-wrap"><div class="bar" id="weekBar"></div></div><div class="small muted" id="weekProgress">0 / 7일 기록</div></div>
+   <div class="panel"><div class="section-head"><h3>빠른 시작</h3><small>오늘의 성장</small></div><p class="muted small" style="line-height:1.7">오늘의 목표와 행동, 성장의 증거를 남겨보세요. 기록은 달력과 리뷰에 자동으로 반영됩니다.</p><div class="quick-actions"><button class="btn primary" onclick="go('daily')">오늘 기록하기</button><button class="btn" onclick="go('calendar')">달력 보기</button></div></div>
+  </div>
+  <div class="panel"><div class="section-head"><h3>최근 성장 기록</h3><small>최근 5개</small></div><div id="recentLogs" class="small muted">아직 기록이 없습니다.</div></div>
+ </section>
+
+ <section class="view" id="daily">
+  <div class="panel"><div class="section-head"><h3>Daily 1% Log</h3><small>매일 3~5분</small></div>
+   <div class="field" style="max-width:240px;margin-bottom:17px"><label>기록 날짜</label><input type="date" id="logDate"></div>
+   <div class="form-grid">
+    <div class="field full"><label>01. 오늘의 개선 목표 <span class="hint">오늘 무엇을 발전시키고 싶은가?</span></label><textarea id="goal" placeholder="예: 영상 편집 능력 향상, 글쓰기, 시간 관리"></textarea></div>
+    <div class="field full"><label>02. 실제로 한 행동 <span class="hint">목표를 위해 구체적으로 무엇을 했는가?</span></label><textarea id="action" placeholder="예: 편집 프로그램으로 30분 작업하고 새로운 기능 1개를 익혔다."></textarea></div>
+    <div class="field full"><label>03. 성장의 증거 <span class="hint">수치·결과물·관찰 가능한 변화. 아직 확인되지 않았다면 솔직하게 기록.</span></label><textarea id="evidence" placeholder="예: 같은 구간을 편집하는 시간이 10분 줄었다."></textarea></div>
+    <div class="field full"><label>04. 오늘의 배움과 내일의 개선점</label><textarea id="lesson" placeholder="예: 단축키를 활용하면 효율이 높아진다. 내일은 다른 편집 기능에도 적용한다."></textarea></div>
+    <div class="field"><label>성장 영역</label><select id="area"><option>능력과 전문성</option><option>경제적 독립과 생산성</option><option>지식과 학습</option><option>건강과 체력</option><option>정신력과 감정 조절</option><option>인간관계와 사회성</option><option>생활습관과 시간 관리</option><option>창의성과 자기표현</option><option>기타</option></select></div>
+    <div class="field"><label>오늘의 실행 상태</label><select id="status"><option value="done">실행하고 증거 확인</option><option value="partial">작게 실행 / 일부 진행</option><option value="learned">실행은 못했지만 원인·배움 발견</option><option value="rest">의도적인 휴식</option></select></div>
+   </div>
+   <div class="form-actions"><span class="small muted" id="saveHint">기록은 이 브라우저에 자동 보관되지 않으므로 저장 버튼을 눌러주세요.</span><div><button class="btn danger" onclick="deleteLog()">삭제</button> <button class="btn primary" onclick="saveLog()">기록 저장</button></div></div>
+  </div>
+ </section>
+
+ <section class="view" id="calendar">
+  <div class="panel"><div class="calendar-head"><button class="btn" onclick="moveMonth(-1)">← 이전</button><div class="month-title" id="monthTitle"></div><button class="btn" onclick="moveMonth(1)">다음 →</button></div>
+   <div class="cal-grid" id="calendarGrid"></div>
+   <div class="small muted" style="margin-top:12px">● 기록이 있는 날 · 날짜를 누르면 해당 일자의 기록을 열 수 있습니다.</div>
+  </div>
+  <div class="panel"><div class="section-head"><h3 id="selectedTitle">선택한 날짜</h3><button class="btn primary" onclick="openSelectedDay()">기록 작성 / 수정</button></div><div id="selectedDetail" class="empty">날짜를 선택하면 기록을 확인할 수 있습니다.</div></div>
+ </section>
+
+ <section class="view" id="reviews">
+  <div class="review-tabs"><button class="active" data-period="weekly">주간 리뷰</button><button data-period="monthly">월간 리뷰</button><button data-period="yearly">연간 리뷰</button></div>
+  <div class="panel"><div class="section-head"><h3 id="reviewTitle">Weekly Review</h3><small id="reviewRange"></small></div><div id="reviewStats" class="grid" style="grid-template-columns:repeat(3,1fr)"></div>
+   <div class="form-grid" id="reviewFields"></div>
+   <div class="form-actions"><span class="small muted">리뷰도 브라우저에 저장됩니다.</span><button class="btn primary" onclick="saveReview()">리뷰 저장</button></div>
+  </div>
+  <div class="panel"><div class="section-head"><h3>리뷰 작성 가이드</h3></div><p class="small muted" style="line-height:1.8">일간 기록을 다시 읽고 반복되는 행동과 변화를 찾아보세요. 주간은 다음 행동을 조정하고, 월간은 실제 결과물을 비교하며, 연간은 시작 시점과 현재의 차이를 정리합니다.</p></div>
+ </section>
+
+ <section class="view" id="metrics">
+  <div class="panel"><div class="section-head"><h3>성장 지수 설정</h3><small>목표 곡선 기준</small></div>
+   <div class="form-grid"><div class="field"><label>성장 시작일</label><input type="date" id="startDate"></div><div class="field"><label>일일 목표 성장률 (%)</label><input type="number" id="dailyRate" min="0" max="100" step=".1" value="1"></div></div>
+   <div class="form-actions"><span class="small muted">시작 지수는 100으로 고정합니다.</span><button class="btn primary" onclick="saveSettings()">설정 저장</button></div>
+  </div>
+  <div class="grid">
+   <div class="card"><div class="stat-label">7일 목표 지수</div><div class="stat-value" id="idx7">107.21</div><div class="stat-note">+7.21%</div></div>
+   <div class="card"><div class="stat-label">30일 목표 지수</div><div class="stat-value" id="idx30">134.78</div><div class="stat-note">+34.78%</div></div>
+   <div class="card"><div class="stat-label">90일 목표 지수</div><div class="stat-value" id="idx90">244.99</div><div class="stat-note">+144.99%</div></div>
+   <div class="card"><div class="stat-label">365일 목표 지수</div><div class="stat-value" id="idx365">3,778.34</div><div class="stat-note">+3,678.34%</div></div>
+  </div>
+  <div class="panel"><div class="section-head"><h3>나의 실제 성장 측정 지표</h3><small>기준값과 현재값을 직접 비교</small></div>
+   <p class="small muted">실제 성장 지표는 각자 선택한 영역에서 동일한 조건으로 비교할 수 있는 수치를 적습니다. 목표 지수와 실제 능력은 별개입니다.</p>
+   <table class="metric-table"><thead><tr><th>영역 / 지표</th><th>시작값</th><th>현재값</th><th>단위 / 메모</th></tr></thead><tbody id="metricRows"></tbody></table>
+   <div class="form-actions"><span class="small muted">행을 추가해 나만의 지표를 관리하세요.</span><button class="btn" onclick="addMetric()">+ 지표 추가</button></div>
+  </div>
+  <div class="panel"><div class="section-head"><h3>기기 간 일회용 코드 전송</h3><small>10분 유효 · 1회 사용</small></div>
+   <p class="small muted" style="line-height:1.7">실시간 동기화 없이 필요한 순간에만 데이터를 옮깁니다. 기존 기기에서 코드를 발급하고, 새 기기에서 입력하세요. 가져오기에 성공하면 코드는 즉시 폐기됩니다.</p>
+   <div class="form-grid"><div class="field"><label for="transferUrl">Supabase 프로젝트 URL</label><input id="transferUrl" type="url" placeholder="https://프로젝트ID.supabase.co" autocomplete="url"></div><div class="field"><label for="transferKey">Supabase anon / publishable key</label><input id="transferKey" type="password" placeholder="공개 anon 키" autocomplete="off"></div></div>
+   <div class="form-actions"><span class="small muted">프로젝트 연결 정보는 이 브라우저에만 저장됩니다.</span><button class="btn" onclick="saveTransferConfig()">연결 정보 저장</button></div>
+   <div class="quick-actions" style="margin-top:15px"><button class="btn primary" onclick="createTransferCode()">이 기기에서 코드 발급</button></div><div class="form-grid" style="margin-top:13px"><div class="field"><label for="redeemCode">다른 기기의 8자리 코드</label><input id="redeemCode" type="text" maxlength="8" minlength="8" inputmode="text" autocapitalize="characters" autocomplete="one-time-code" placeholder="예: 7K4M9Q2B" style="text-transform:uppercase;letter-spacing:2px"></div><div class="field" style="align-content:end"><button class="btn" onclick="redeemTransferCode()">코드로 데이터 가져오기</button></div></div>
+   <div id="transferResult" class="small" style="margin-top:13px;line-height:1.7" aria-live="polite"></div>
+  </div>
+  <div class="panel"><div class="section-head"><h3>파일 백업</h3></div><p class="small muted">일회용 코드 전송과 별개로 JSON 파일을 내려받거나 기존 백업을 불러올 수도 있습니다.</p><div class="quick-actions"><button class="btn" onclick="exportData()">백업 파일 다운로드</button><label class="btn">백업 불러오기<input type="file" accept="application/json" id="importFile" hidden onchange="importData(event)"></label></div></div>
+ </section>
+
+ <section class="view" id="rules">
+  <div class="panel"><div class="section-head"><h3>1% Growth Principles</h3><small>지속 가능한 성장을 위한 다섯 가지 규칙</small></div>
+   <div class="rule-list">
+    <div class="rule"><div class="rule-num">1</div><div><strong>기록은 5분 이내로</strong><p>기록 자체가 또 다른 업무가 되지 않도록 네 가지 질문에 한두 문장으로 답합니다.</p></div></div>
+    <div class="rule"><div class="rule-num">2</div><div><strong>매일 같은 시간에 기록하기</strong><p>하루를 마무리하는 시간에 기록합니다. 특정 시간에 얽매이기보다 나에게 맞는 루틴을 만듭니다.</p></div></div>
+    <div class="rule"><div class="rule-num">3</div><div><strong>성과가 없는 날도 기록하기</strong><p>실행하지 못한 이유, 작은 시도, 새롭게 알게 된 장애물을 기록합니다. 확인되지 않은 능력 향상을 억지로 인정하지 않습니다.</p></div></div>
+    <div class="rule"><div class="rule-num">4</div><div><strong>하나의 목표를 며칠간 이어가기</strong><p>매일 새로운 목표를 만들 필요는 없습니다. 같은 목표를 반복해서 연습하고 다른 측면을 개선합니다.</p></div></div>
+    <div class="rule"><div class="rule-num">5</div><div><strong>놓친 날은 보충하지 않고 다시 시작하기</strong><p>기록을 빠뜨렸다고 다음 날 두 배로 하지 않습니다. 공백을 그대로 두고 오늘부터 다시 이어갑니다.</p></div></div>
+   </div>
+  </div>
+  <div class="panel"><div class="section-head"><h3>성장 지수 읽는 법</h3></div><p class="small muted" style="line-height:1.85">목표 성장 지수 = 100 × (1 + 일일 성장률) ^ 경과 일수<br>매일 1% 복리 성장 가정 시 7일 107.21, 30일 134.78, 90일 244.99, 365일 3,778.34입니다. 이는 목표를 시각화하는 이론적 곡선이지 실제 능력의 배수나 매일 달성 여부를 뜻하지 않습니다. 실제 변화는 작업 시간, 결과물 품질, 학습 테스트, 실천 빈도 등 관찰 가능한 지표로 별도 확인합니다.</p></div>
+ </section>
+</main></div><div class="toast" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id), todayISO=()=>{let d=new Date();return dateISO(d)}, dateISO=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`, parseDate=s=>{let [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}, addDays=(d,n)=>{let x=new Date(d);x.setDate(x.getDate()+n);return x}, fmt=d=>`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+let data=JSON.parse(localStorage.getItem('growthTrackerData')||'{"logs":{},"reviews":{},"metrics":[],"settings":{}}');
+let selectedDate=todayISO(), calDate=new Date(), reviewPeriod='weekly';
+function persist(){localStorage.setItem('growthTrackerData',JSON.stringify(data))}
+function toast(s){let t=$('toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+function go(v){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===v));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===v));let names={dashboard:'대시보드',daily:'일간 기록',calendar:'성장 달력',reviews:'기간별 리뷰',metrics:'성장 지표',rules:'성장 규칙'};$('pageTitle').textContent=names[v];if(v==='calendar')renderCalendar();if(v==='reviews')renderReview();if(v==='metrics')renderMetrics()}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.view));
+$('todayLabel').textContent=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(new Date());
+function dayDiff(a,b){return Math.max(0,Math.floor((parseDate(b)-parseDate(a))/86400000))}
+function indexAt(n){let r=Number(data.settings.rate??1)/100;return 100*Math.pow(1+r,n)}
+function streak(){let d=parseDate(todayISO()),n=0;if(!data.logs[todayISO()])d=addDays(d,-1);while(data.logs[dateISO(d)]){n++;d=addDays(d,-1)}return n}
+function renderDashboard(){let dates=Object.keys(data.logs).sort(),start=data.settings.start||todayISO(),days=dayDiff(start,todayISO());$('heroIndex').textContent=indexAt(days).toLocaleString('ko-KR',{minimumFractionDigits:2,maximumFractionDigits:2});$('statDays').textContent=dates.length+'일';$('statStreak').textContent=streak()+'일';$('statGrowth').textContent='+'+(indexAt(days)-100).toFixed(2)+'%';let month=todayISO().slice(0,7);$('statMonth').textContent=dates.filter(x=>x.startsWith(month)).length+'일';
+let now=parseDate(todayISO()),dow=(now.getDay()+6)%7,monday=addDays(now,-dow),daysK=['월','화','수','목','금','토','일'];$('weekLabel').textContent=fmt(monday)+' ~ '+fmt(addDays(monday,6));$('weekDays').innerHTML=daysK.map((d,i)=>{let key=dateISO(addDays(monday,i)),done=!!data.logs[key];return `<div class="day-mini ${done?'done':''}">${d}<b>${addDays(monday,i).getDate()}</b>${done?'✓':'·'}</div>`}).join('');let count=Array.from({length:7},(_,i)=>data.logs[dateISO(addDays(monday,i))]).filter(Boolean).length;$('weekBar').style.width=(count/7*100)+'%';$('weekProgress').textContent=`${count} / 7일 기록`;
+let recent=dates.slice(-5).reverse();$('recentLogs').innerHTML=recent.length?recent.map(k=>`<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);gap:12px"><span><b>${k}</b> · ${esc(data.logs[k].area||'기타')}</span><span class="muted">${esc((data.logs[k].goal||'목표 미입력').slice(0,45))}</span></div>`).join(''):'아직 기록이 없습니다.'}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+$('logDate').value=selectedDate;
+function loadLog(date){selectedDate=date;$('logDate').value=date;let x=data.logs[date]||{};['goal','action','evidence','lesson','area','status'].forEach(k=>$(k).value=x[k]|| (k==='area'?'능력과 전문성':k==='status'?'done':''));$('saveHint').textContent=data.logs[date]?'저장된 기록을 수정할 수 있습니다.':'새로운 기록을 작성하세요.'}
+$('logDate').addEventListener('change',e=>loadLog(e.target.value));
+function saveLog(){let date=$('logDate').value;if(!date){toast('날짜를 선택해 주세요.');return}data.logs[date]={};['goal','action','evidence','lesson','area','status'].forEach(k=>data.logs[date][k]=$(k).value.trim());persist();selectedDate=date;$('saveHint').textContent='저장 완료 · '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});renderDashboard();renderCalendar();toast('성장 기록을 저장했습니다.')}
+function deleteLog(){let date=$('logDate').value;if(data.logs[date]&&confirm(date+' 기록을 삭제할까요?')){delete data.logs[date];persist();loadLog(date);renderDashboard();renderCalendar();toast('기록을 삭제했습니다.')}}
+function renderCalendar(){let y=calDate.getFullYear(),m=calDate.getMonth();$('monthTitle').textContent=`${y}년 ${m+1}월`;let first=new Date(y,m,1),start=addDays(first,-((first.getDay()+6)%7));let html=['월','화','수','목','금','토','일'].map(x=>`<div class="cal-cell" style="min-height:auto;background:#f3f1e9;cursor:default;color:var(--muted);font-size:11px;font-weight:700">${x}</div>`).join('');for(let i=0;i<42;i++){let d=addDays(start,i),k=dateISO(d),log=data.logs[k],cls=(d.getMonth()!==m?'muted-day ':'')+(k===todayISO()?'today ':'')+(k===selectedDate?'selected':'');html+=`<div class="cal-cell ${cls}" onclick="selectCalendarDate('${k}')"><div class="date-num">${d.getDate()}</div>${log?'<span class="cal-dot"></span><div class="cal-snippet">'+esc(log.goal||'기록 완료')+'</div>':''}</div>`} $('calendarGrid').innerHTML=html;renderSelected()}
+function moveMonth(n){calDate=new Date(calDate.getFullYear(),calDate.getMonth()+n,1);renderCalendar()}
+function selectCalendarDate(k){selectedDate=k;renderCalendar()}
+function renderSelected(){let log=data.logs[selectedDate];$('selectedTitle').textContent=selectedDate+' 기록';$('selectedDetail').innerHTML=log?`<div class="small"><b>${esc(log.area)}</b> · ${esc(({done:'실행 및 증거 확인',partial:'일부 진행',learned:'배움 발견',rest:'의도적 휴식'})[log.status])}</div><p><b>목표</b><br>${esc(log.goal||'—')}</p><p><b>행동</b><br>${esc(log.action||'—')}</p><p><b>성장의 증거</b><br>${esc(log.evidence||'—')}</p><p><b>배움 / 내일의 개선</b><br>${esc(log.lesson||'—')}</p>`:'<div class="empty">이 날짜에는 아직 기록이 없습니다.</div>'}
+function openSelectedDay(){go('daily');loadLog(selectedDate)}
+const reviewQs={weekly:['이번 주 가장 발전한 능력은?','반복해서 실천한 행동은?','실제로 개선된 결과물이나 증거는?','반복해서 발생한 문제는?','다음 주에 집중할 목표 하나는?'],monthly:['월초와 비교해 달라진 점은?','이번 달 완성한 결과물과 성과는?','시간·품질·숙련도 중 개선된 지표는?','투자한 시간에 비해 성과가 낮았던 영역은?','다음 달에 바꿀 점과 우선순위는?'],yearly:['1년 전에는 못했지만 지금은 할 수 있는 것은?','가장 크게 성장한 능력과 증거는?','경제적·직업적으로 어떤 변화가 있었는가?','습관과 사고방식은 어떻게 달라졌는가?','내년에 발전시키고 싶은 능력은?']};
+function reviewKey(){let d=parseDate(todayISO());if(reviewPeriod==='weekly'){let mon=addDays(d,-((d.getDay()+6)%7));return dateISO(mon)}if(reviewPeriod==='monthly')return todayISO().slice(0,7);return String(d.getFullYear())}
+function renderReview(){let key=reviewKey(),r=data.reviews[reviewPeriod+'_'+key]||{};$('reviewTitle').textContent=({weekly:'Weekly Review',monthly:'Monthly Review',yearly:'Yearly Review'})[reviewPeriod];$('reviewRange').textContent=key;let logs=Object.entries(data.logs).filter(([k])=>reviewPeriod==='weekly'?k>=key&&k<=dateISO(addDays(parseDate(key),6)):reviewPeriod==='monthly'?k.startsWith(key):k.startsWith(key));let theoretical=reviewPeriod==='weekly'?7:reviewPeriod==='monthly'?30:365;$('reviewStats').innerHTML=`<div class="card"><div class="stat-label">기록일</div><div class="stat-value">${logs.length}일</div></div><div class="card"><div class="stat-label">목표 기간</div><div class="stat-value">${theoretical}일</div></div><div class="card"><div class="stat-label">기간 목표 성장률</div><div class="stat-value green">+${(indexAt(theoretical)-100).toFixed(2)}%</div></div>`;$('reviewFields').innerHTML=reviewQs[reviewPeriod].map((q,i)=>`<div class="field full"><label>${String(i+1).padStart(2,'0')}. ${q}</label><textarea data-review="${i}" placeholder="내용을 입력하세요.">${esc(r[i]||'')}</textarea></div>`).join('')}
+document.querySelectorAll('.review-tabs button').forEach(b=>b.onclick=()=>{reviewPeriod=b.dataset.period;document.querySelectorAll('.review-tabs button').forEach(x=>x.classList.toggle('active',x===b));renderReview()});
+function saveReview(){let key=reviewKey(),r={};document.querySelectorAll('[data-review]').forEach(x=>r[x.dataset.review]=x.value.trim());data.reviews[reviewPeriod+'_'+key]=r;persist();toast('기간별 리뷰를 저장했습니다.')}
+function saveSettings(){data.settings.start=$('startDate').value||todayISO();data.settings.rate=Number($('dailyRate').value)||1;persist();renderDashboard();renderMetrics();toast('성장 지수 설정을 저장했습니다.')}
+function addMetric(){data.metrics.push({name:'새 지표',base:'',current:'',unit:''});persist();renderMetrics()}
+function renderMetrics(){let s=data.settings;$('startDate').value=s.start||todayISO();$('dailyRate').value=s.rate??1;[7,30,90,365].forEach(n=>$('idx'+n).textContent=indexAt(n).toLocaleString('ko-KR',{maximumFractionDigits:2}));$('metricRows').innerHTML=data.metrics.length?data.metrics.map((m,i)=>`<tr><td><input value="${esc(m.name)}" onchange="editMetric(${i},'name',this.value)"></td><td><input value="${esc(m.base)}" onchange="editMetric(${i},'base',this.value)"></td><td><input value="${esc(m.current)}" onchange="editMetric(${i},'current',this.value)"></td><td><input value="${esc(m.unit)}" onchange="editMetric(${i},'unit',this.value)"></td><td><button class="btn danger" onclick="removeMetric(${i})">삭제</button></td></tr>`).join(''):'<tr><td colspan="5" class="empty">아직 등록된 지표가 없습니다. 예: 편집 소요 시간, 월간 수익, 테스트 점수</td></tr>'}
+function editMetric(i,k,v){data.metrics[i][k]=v;persist()}function removeMetric(i){data.metrics.splice(i,1);persist();renderMetrics()}
+
+const TRANSFER_CONFIG_KEY='growthTrackerTransferConfig';
+function loadTransferConfig(){try{return JSON.parse(localStorage.getItem(TRANSFER_CONFIG_KEY)||'{}')}catch{return {}}}
+function saveTransferConfig(){const url=$('transferUrl').value.trim().replace(/\/$/,''),key=$('transferKey').value.trim();if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url)||!key){toast('올바른 프로젝트 URL과 공개 키를 입력해 주세요.');return}localStorage.setItem(TRANSFER_CONFIG_KEY,JSON.stringify({url,key}));toast('연결 정보를 저장했습니다.')}
+function transferConfig(){const c=loadTransferConfig();if(!c.url||!c.key)throw Error('먼저 Supabase 프로젝트 URL과 공개 키를 입력하고 저장해 주세요.');return c}
+async function transferRequest(action,body){const c=transferConfig();const res=await fetch(c.url+'/functions/v1/transfer',{method:'POST',headers:{'Content-Type':'application/json','apikey':c.key,'Authorization':'Bearer '+c.key},body:JSON.stringify({action,...body})});let out={};try{out=await res.json()}catch{}if(!res.ok)throw Error(out.error||'서버 요청에 실패했습니다.');return out}
+function validGrowthData(x){return !!x&&typeof x==='object'&&x.logs&&typeof x.logs==='object'&&x.reviews&&typeof x.reviews==='object'&&Array.isArray(x.metrics)&&x.settings&&typeof x.settings==='object'}
+async function createTransferCode(){const box=$('transferResult');box.textContent='일회용 코드를 발급하고 있습니다…';try{const out=await transferRequest('create',{payload:data});box.innerHTML='이 코드를 새 기기에 입력하세요. <b style="display:block;font-size:30px;letter-spacing:5px;color:var(--accent);margin:9px 0">'+esc(out.code)+'</b><button class="btn" onclick="GenCopyTransferCode()">코드 복사</button><div class="muted">만료 시각: '+esc(new Date(out.expires_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}))+' · 한 번 가져오면 즉시 폐기됩니다.</div>';window.currentGrowthTransferCode=out.code;}catch(e){box.textContent=e.message;}}
+function GenCopyTransferCode(){if(window.currentGrowthTransferCode){navigator.clipboard?.writeText(window.currentGrowthTransferCode).then(()=>toast('코드를 복사했습니다.')).catch(()=>toast('코드를 길게 눌러 복사해 주세요.'))}}
+async function redeemTransferCode(){const code=$('redeemCode').value;if(!code)return toast('8자리 코드를 입력해 주세요.');if(!/^[A-HJ-NP-Z2-9]{8}$/i.test(code.trim())){toast('8자리 코드를 확인해 주세요.');return}if(!confirm('가져온 데이터로 이 기기의 현재 기록을 덮어쓸까요? 먼저 현재 기록을 백업하는 것을 권장합니다.'))return;const box=$('transferResult');box.textContent='코드를 확인하고 데이터를 가져오는 중…';try{const out=await transferRequest('redeem',{code:code.trim().toUpperCase()});if(!validGrowthData(out.payload))throw Error('전송된 데이터 형식이 올바르지 않습니다.');data=out.payload;persist();loadLog(todayISO());renderDashboard();renderCalendar();renderMetrics();if(document.querySelector('.view.active')?.id==='reviews')renderReview();box.textContent='가져오기가 완료됐습니다. 코드는 즉시 폐기됐습니다.';$('redeemCode').value='';toast('다른 기기의 기록을 가져왔습니다.')}catch(e){box.textContent=e.message}}
+(function initTransferConfig(){const c=loadTransferConfig();$('transferUrl').value=c.url||'';$('transferKey').value=c.key||''})();
+
+function exportData(){let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='growth-tracker-backup-'+todayISO()+'.json';a.click();URL.revokeObjectURL(a.href);toast('백업 파일을 다운로드합니다.')}
+function importData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.logs||!x.settings)throw Error();data=x;persist();loadLog(todayISO());renderDashboard();renderCalendar();renderMetrics();toast('백업을 불러왔습니다.')}catch{alert('올바른 Growth Tracker 백업 파일이 아닙니다.')}};r.readAsText(f)}
+loadLog(todayISO());renderDashboard();renderCalendar();renderMetrics();
+</script>
+</body></html>
